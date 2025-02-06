@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Auth\Login;
+
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -21,6 +23,8 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Illuminate\Support\Facades\Blade;
 use Filament\Support\Facades\FilamentView;
 
+
+
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
@@ -29,10 +33,11 @@ class AdminPanelProvider extends PanelProvider
         FilamentView::registerRenderHook('panels::body.end', fn(): string => Blade::render("@vite('resources/js/app.js')"));
 
         return $panel
-            ->default()
+            ->default(Login::class)
             ->id('admin')
             ->path('admin')
-            ->login()
+            // ->login()
+            ->login(Login::class)
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -59,6 +64,12 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
-            ]);
+            ])
+
+            // Changes
+            // ->path('')
+            // ->login(Login::class)
+            ->viteTheme('resources/css/filament/admin/theme.css')
+        ;
     }
 }
